@@ -1,0 +1,37 @@
+[   
+    
+    {   
+        "id": 1,
+        "name": "Mate",
+        "price":  2000,
+        "amount": 1
+    },
+
+    {   
+        "id": 2,
+        "name": "Bombilla",
+        "price": 1000,
+        "amount": 1
+    },
+
+    {   
+        "id": 3,
+        "name": "Termo",
+        "price": 10000,
+        "amount": 1
+    },
+
+    {   
+        "id": 4,
+        "name": "Yerba",
+        "price": 500,
+        "amount": 1
+    },
+
+    {   
+        "id": 5,
+        "name": "Bolso Matero",
+        "price": 5000,
+        "amount": 1
+    }
+]
