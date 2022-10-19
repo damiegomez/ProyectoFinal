@@ -1,13 +1,14 @@
 
 const productsContainer = document.getElementById('productsContainer');
-const SeeProducts = document.getElementById('btnSeeProducts')
+const Seeproducts = document.getElementById('btnSeeProducts')
 const cartContainer = document.getElementById('cartContainer');
 const btnEmptyCart = document.getElementById('emptyCart');
 const totalPrice = document.getElementById('totalPrice');
 const checkout = document.getElementById('checkout');
 
-let cart = [];
+let gondola = [];
 let productInCart = [];
+let counter = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('cart')){
@@ -16,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 })
 
-SeeProducts.onclick = async() => {
+Seeproducts.onclick = async() => {
 
     const infoCatalogue = await fetch('./catalogue.json')
     const infoCatalogueJson = await infoCatalogue.json()
     await infoCatalogueJson.forEach(e => {
-        cart.push(e)
+        gondola.push(e)
         console.log(e)
     })
     
@@ -41,7 +42,7 @@ SeeProducts.onclick = async() => {
 
         console.log(product.id);
         btnAdd.addEventListener('click', () => {
-            addToCart();
+            addToCart(product);
         })        
         
     })
@@ -49,9 +50,20 @@ SeeProducts.onclick = async() => {
     }   
 
     const addToCart = (prodId) => {
+        console.log(prodId)
+        const productFound = gondola.find((prod) => prod.id === prodId);
+        console.log(productFound)
+        
+        const checkCart = productInCart.find((prod) => prod.id === prodId);
 
-        infoCatalogueJson.find((prod) => prod.id === prodId);
+        if(productFound && checkCart){
            
+            counter.innerHTML =  counter++;
+        } else {
+            productInCart.push(prodId);
+            console.log(productInCart)
+        }
+        updateCart();
     }
        /*
             btnRemove.onclick = (prodId) =>{
@@ -80,7 +92,7 @@ btnEmptyCart.addEventListener('click', () => {
         }
       })
 
-    cart.length = 0;
+    gondola.length = 0;
     updateCart();
 })
 
@@ -88,7 +100,7 @@ const updateCart = () => {
 
     cartContainer.innerHTML = "";
 
-    cart.forEach((prod)=> {
+    gondola.forEach((prod)=> {
 
         const div = document.createElement('div')
         div.innerHTML = `
@@ -99,9 +111,9 @@ const updateCart = () => {
         `
 
         cartContainer.appendChild(div);
-        localStorage.setItem('cart', JSON.stringify(cart));
+        localStorage.setItem('cart', JSON.stringify(gondola));
 
-        totalPrice.innerHTML = cart.reduce((acc,prod) => acc + prod.price * prod.amount, 0);
+        totalPrice.innerHTML = gondola.reduce((acc,prod) => acc + prod.price * prod.amount, 0);
         
     })
 
