@@ -7,8 +7,8 @@ const totalPrice = document.getElementById('totalPrice');
 const checkout = document.getElementById('checkout');
 
 let gondola = [];
-let productInCart = [];
-let counter = 0;
+let cart = [];
+let amount = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('cart')){
@@ -32,18 +32,24 @@ Seeproducts.onclick = async() => {
         <h1>${product.name}</h1>
         <p>$${product.price}</p>
         <button id="add${product.id}"> Agregar </button>
-        <button id="remove${product.id}"> Eliminar</button>
+        <button id="remove${product.id}"> Eliminar</button> 
         <hr>
         `
         productsContainer.appendChild(div);
+        
 
         const btnAdd = document.getElementById(`add${product.id}`)
         const btnRemove = document.getElementById(`remove${product.id}`)
 
         console.log(product.id);
         btnAdd.addEventListener('click', () => {
-            addToCart(product);
-        })        
+            addToCart(product); 
+           
+        })  
+        
+        btnRemove.addEventListener('click', () => {
+            removeItem(product);
+        })
         
     })
 
@@ -51,30 +57,39 @@ Seeproducts.onclick = async() => {
 
     const addToCart = (prodId) => {
         console.log(prodId)
-        const productFound = gondola.find((prod) => prod.id === prodId);
+        const productFound = cart.find((prod) => prod.id === prodId);
         console.log(productFound)
         
-        const checkCart = productInCart.find((prod) => prod.id === prodId);
+        const checkCart = cart.find((prod) => prod.id === prodId);
 
         if(productFound && checkCart){
-           
-            counter.innerHTML =  counter++;
+            
+            
+            prodId.innerHTML = amount++;
+
         } else {
-            productInCart.push(prodId);
-            console.log(productInCart)
+            cart.push(prodId);
+            console.log(cart)
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Producto agregado con éxito',
+                showConfirmButton: false,
+                timer: 1500
+                })
         }
         updateCart();
     }
-       /*
-            btnRemove.onclick = (prodId) =>{
+       
+    const removeItem = (productId) => {
                 
-                    let item = cart.find((prod) => prod.id === prodId);
-                    const index = cart.indexOf(item)
-                    cart.splice(index,1)
-                    updateCart();
+                let item = cart.find((prod) => prod.id === productId);
+                const index = cart.indexOf(item)
+                cart.splice(index,1)
+                updateCart();
                 
             }
-    */
+    
 
 btnEmptyCart.addEventListener('click', () => {
     Swal.fire({
@@ -87,33 +102,36 @@ btnEmptyCart.addEventListener('click', () => {
       }).then((result) => {
         if (result.isConfirmed) {
           Swal.fire(
-            "Carrito vaciado con exito!"
+            "Carrito vaciado con exito!"         
           )
+          totalPrice.innerHTML = 0;
+            cart.length = 0;
         }
+         updateCart();
       })
 
-    gondola.length = 0;
-    updateCart();
+    
+       
 })
 
 const updateCart = () => {
 
     cartContainer.innerHTML = "";
 
-    gondola.forEach((prod)=> {
+    cart.forEach((prod)=> {
 
         const div = document.createElement('div')
         div.innerHTML = `
         <p>${prod.name}</p>
         <p>Precio: $${prod.price}</p>
         <p>Cantidad: <span id="amount">${prod.amount}</span></p>
-        <button onclick = "removeFromCart(${prod.id})" class ="btnDelete">Eliminar<i class="fas fa-trash-alt"</button>
+        <!-- <button onclick = "removeFromCart(${prod.id})" class ="btnDelete">Eliminar<i class="fas fa-trash-alt"</button> -->
         `
 
         cartContainer.appendChild(div);
-        localStorage.setItem('cart', JSON.stringify(gondola));
+        localStorage.setItem('cart', JSON.stringify(cart));
 
-        totalPrice.innerHTML = gondola.reduce((acc,prod) => acc + prod.price * prod.amount, 0);
+        totalPrice.innerHTML = cart.reduce((acc,prod) => acc + prod.price * prod.amount, 0);
         
     })
 
@@ -121,7 +139,7 @@ const updateCart = () => {
 
  checkout.onclick = () => {
 
-    Swal.fire("Gracias por su compra, hasta luego")
+    Swal.fire(`El total a pagar es de $${totalPrice}. Muchas gracias por su compra!`);
 }
 
 
